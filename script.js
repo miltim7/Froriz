@@ -1,4 +1,3 @@
-// script.js
 document.addEventListener("DOMContentLoaded", function () {
     var burger = document.querySelector(".burger");
     var mobileMenu = document.querySelector(".mobile-menu");
@@ -71,4 +70,43 @@ document.addEventListener("DOMContentLoaded", function () {
             setActive(next);
         }, 5000);
     });
+
+    (function () {
+        var timeline = document.querySelector(".process__timeline");
+        var line = document.querySelector(".process-timeline__progress-line");
+        var steps = document.querySelectorAll(".process-step");
+        
+        if (!timeline || !line || !steps.length) return;
+
+        var animationDuration = 12000; 
+
+        function animateProcess(timestamp) {
+            if (window.innerWidth <= 768) {
+                line.style.width = "0%";
+                steps.forEach(function(s) { s.classList.add("is-active"); }); 
+                return;
+            }
+
+            var progress = (timestamp % animationDuration) / animationDuration;
+            var currentLineWidth = timeline.offsetWidth * progress;
+            
+            line.style.width = (progress * 100) + "%";
+
+            steps.forEach(function (step) {
+                var stepLeft = step.offsetLeft;
+                var stepWidth = step.offsetWidth;
+                var triggerPoint = stepLeft + (stepWidth / 3);
+
+                if (currentLineWidth >= triggerPoint) {
+                    step.classList.add("is-active");
+                } else {
+                    step.classList.remove("is-active");
+                }
+            });
+
+            requestAnimationFrame(animateProcess);
+        }
+
+        requestAnimationFrame(animateProcess);
+    })();
 });
